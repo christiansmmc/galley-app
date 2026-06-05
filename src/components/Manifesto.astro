@@ -1,0 +1,16 @@
+---
+import { STRINGS } from '../lib/i18n';
+const en = STRINGS.en;
+---
+<section class="section manifesto">
+  <div class="wrap">
+    <p class="serif line" data-i18n="manifesto_line">{en.manifesto_line}</p>
+    <p class="muted sub" data-i18n="manifesto_sub">{en.manifesto_sub}</p>
+  </div>
+</section>
+
+<style>
+  .manifesto { background: var(--surface-2); text-align: center; }
+  .line { font-size: 30px; font-style: italic; margin: 0 0 10px; }
+  .sub { max-width: 540px; margin: 0 auto; }
+</style>

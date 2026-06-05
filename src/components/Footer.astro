@@ -1,0 +1,21 @@
+---
+import { STRINGS } from '../lib/i18n';
+const en = STRINGS.en;
+---
+<footer class="footer">
+  <div class="wrap inner">
+    <p class="serif tagline" data-i18n="footer_tagline">{en.footer_tagline}</p>
+    <nav class="links muted">
+      <a href="https://github.com/christiansmmc/galley-app" data-i18n="footer_source">{en.footer_source}</a>
+      <span data-i18n="footer_license">{en.footer_license}</span>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .footer { border-top: 1px solid var(--line); padding: 40px 0; }
+  .inner { display: flex; align-items: center; justify-content: space-between; }
+  .tagline { font-style: italic; font-size: 18px; margin: 0; }
+  .links { display: flex; gap: 18px; font-size: 14px; }
+  @media (max-width: 620px) { .inner { flex-direction: column; gap: 14px; } }
+</style>

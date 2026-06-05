@@ -1,0 +1,40 @@
+---
+import { STRINGS } from '../lib/i18n';
+const en = STRINGS.en;
+const base = import.meta.env.BASE_URL;
+---
+<section class="section themes">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="themes_eyebrow">{en.themes_eyebrow}</p>
+    <h2 class="serif title" data-i18n="themes_title">{en.themes_title}</h2>
+    <p class="muted lead" data-i18n="themes_body">{en.themes_body}</p>
+    <div class="grid">
+      <figure>
+        <img class="shot" src={`${base}/01-hero.png`} alt="Linen theme" />
+        <figcaption class="muted" data-i18n="themes_linen">{en.themes_linen}</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src={`${base}/07-paper.png`} alt="Paper theme" />
+        <figcaption class="muted" data-i18n="themes_paper">{en.themes_paper}</figcaption>
+      </figure>
+    </div>
+    <div class="swatches">
+      <span style="background:var(--sage)"></span>
+      <span style="background:var(--ochre)"></span>
+      <span style="background:var(--ink)"></span>
+      <span style="background:var(--rust)"></span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .themes { background: var(--surface-2); text-align: center; }
+  .title { font-size: 30px; font-weight: 400; margin: 14px 0 12px; }
+  .lead { max-width: 560px; margin: 0 auto 32px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  figure { margin: 0; }
+  figcaption { margin-top: 10px; font-style: italic; font-family: 'Source Serif 4', serif; }
+  .swatches { display: flex; gap: 12px; justify-content: center; margin-top: 28px; }
+  .swatches span { width: 22px; height: 22px; border-radius: 999px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+</style>

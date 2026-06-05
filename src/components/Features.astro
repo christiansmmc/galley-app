@@ -1,0 +1,39 @@
+---
+import { STRINGS } from '../lib/i18n';
+const en = STRINGS.en;
+type Key = keyof typeof en;
+const base = import.meta.env.BASE_URL;
+const features: { img: string; t: Key; b: Key }[] = [
+  { img: '03-palette.png', t: 'feat_palette_title', b: 'feat_palette_body' },
+  { img: '04-settings.png', t: 'feat_diff_title', b: 'feat_diff_body' },
+  { img: '05-first-run.png', t: 'feat_comments_title', b: 'feat_comments_body' },
+  { img: '07-paper.png', t: 'feat_repos_title', b: 'feat_repos_body' },
+];
+---
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="features_eyebrow">{en.features_eyebrow}</p>
+    <div class="rows">
+      {features.map((f, i) => (
+        <div class={`row ${i % 2 ? 'rev' : ''}`}>
+          <div class="copy">
+            <h3 class="serif" data-i18n={f.t}>{en[f.t]}</h3>
+            <p class="muted" data-i18n={f.b}>{en[f.b]}</p>
+          </div>
+          <img class="shot" src={`${base}/${f.img}`} alt="" />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .rows { display: flex; flex-direction: column; gap: 64px; margin-top: 28px; }
+  .row { display: grid; grid-template-columns: 1fr 1.25fr; gap: 40px; align-items: center; }
+  .row.rev { direction: rtl; }
+  .row.rev > * { direction: ltr; }
+  .copy h3 { font-size: 24px; font-weight: 400; margin: 0 0 10px; }
+  @media (max-width: 760px) {
+    .row, .row.rev { grid-template-columns: 1fr; direction: ltr; gap: 18px; }
+  }
+</style>

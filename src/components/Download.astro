@@ -1,0 +1,70 @@
+---
+import { STRINGS } from '../lib/i18n';
+const en = STRINGS.en;
+---
+<section class="section download" id="download">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="download_eyebrow">{en.download_eyebrow}</p>
+    <h2 class="serif title" data-i18n="download_title">{en.download_title}</h2>
+    <div id="dl-status" class="muted" data-i18n="download_loading">{en.download_loading}</div>
+    <div id="dl-buttons" class="buttons"></div>
+    <div id="dl-meta" class="muted meta"></div>
+  </div>
+</section>
+
+<style>
+  .download { text-align: center; }
+  .title { font-size: 30px; font-weight: 400; margin: 14px 0 20px; }
+  .buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .meta { margin-top: 14px; font-size: 14px; }
+  #dl-status:empty { display: none; }
+</style>
+
+<script>
+  import { buildDownloads } from '../lib/releases';
+  import { STRINGS } from '../lib/i18n';
+
+  const REPO = 'christiansmmc/galley-app';
+  const API = `https://api.github.com/repos/${REPO}/releases/latest`;
+  const RELEASES_URL = `https://github.com/${REPO}/releases`;
+
+  const statusEl = document.getElementById('dl-status')!;
+  const btnEl = document.getElementById('dl-buttons')!;
+  const metaEl = document.getElementById('dl-meta')!;
+
+  function lang(): 'en' | 'pt' {
+    const l = document.documentElement.getAttribute('lang');
+    return l === 'pt' ? 'pt' : 'en';
+  }
+  function t(key: keyof typeof STRINGS['en']): string { return STRINGS[lang()][key]; }
+
+  function renderNone() {
+    statusEl.textContent = t('download_none');
+    btnEl.innerHTML = `<a class="btn btn-ghost" href="${RELEASES_URL}">${t('download_releases_link')}</a>`;
+    metaEl.textContent = '';
+  }
+
+  async function load() {
+    try {
+      const res = await fetch(API, { headers: { Accept: 'application/vnd.github+json' } });
+      if (!res.ok) return renderNone();
+      const data = await res.json();
+      const downloads = buildDownloads(data);
+      if (downloads.length === 0) return renderNone();
+      statusEl.textContent = '';
+      btnEl.innerHTML = downloads
+        .map((d) => `<a class="btn btn-primary" href="${d.url}">${d.label}</a>`)
+        .join('');
+      metaEl.dataset.version = data.tag_name;
+      paintMeta();
+    } catch (e) {
+      renderNone();
+    }
+  }
+  function paintMeta() {
+    const v = metaEl.dataset.version;
+    if (v) metaEl.textContent = `${t('download_version')} ${v} · ${t('footer_license')}`;
+  }
+  document.addEventListener('langchange', () => { paintMeta(); if (statusEl.textContent) statusEl.textContent = t('download_loading'); });
+  load();
+</script>
