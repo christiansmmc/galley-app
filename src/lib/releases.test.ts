@@ -42,4 +42,14 @@ describe('buildDownloads', () => {
   it('carries the version tag', () => {
     expect(buildDownloads(release)[0].version).toBe('v0.9.1');
   });
+  it('takes the first asset when two assets share a platform', () => {
+    const dl = buildDownloads({
+      ...release,
+      assets: [
+        { name: 'Galley-1.0-1.x86_64.rpm', browser_download_url: 'https://x/first.rpm' },
+        { name: 'Galley-1.0-2.x86_64.rpm', browser_download_url: 'https://x/second.rpm' },
+      ],
+    });
+    expect(dl[0].url).toBe('https://x/first.rpm');
+  });
 });

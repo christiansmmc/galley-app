@@ -20,7 +20,7 @@ export interface Download {
 const LABELS: Record<Platform, string> = {
   rpm: 'Linux · .rpm (Fedora/Nobara)',
   deb: 'Linux · .deb (Ubuntu/Debian)',
-  windows: 'Windows · .msi',
+  windows: 'Windows',
 };
 const ORDER: Platform[] = ['rpm', 'deb', 'windows'];
 
