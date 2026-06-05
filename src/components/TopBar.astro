@@ -66,5 +66,5 @@ const base = import.meta.env.BASE_URL;
   const initLang = document.documentElement.getAttribute('lang') || 'en';
   syncTheme(initTheme);
   syncLang(initLang);
-  window.__setLang(initLang);
+  if (initLang !== 'en') window.__setLang(initLang); // only apply when overriding the English SSR default
 </script>
