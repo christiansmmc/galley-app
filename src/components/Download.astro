@@ -32,6 +32,8 @@ const en = STRINGS.en;
   const btnEl = document.getElementById('dl-buttons')!;
   const metaEl = document.getElementById('dl-meta')!;
 
+  let state: 'loading' | 'none' | 'ready' = 'loading';
+
   function lang(): 'en' | 'pt' {
     const l = document.documentElement.getAttribute('lang');
     return l === 'pt' ? 'pt' : 'en';
@@ -39,6 +41,7 @@ const en = STRINGS.en;
   function t(key: keyof typeof STRINGS['en']): string { return STRINGS[lang()][key]; }
 
   function renderNone() {
+    state = 'none';
     statusEl.textContent = t('download_none');
     btnEl.innerHTML = `<a class="btn btn-ghost" href="${RELEASES_URL}">${t('download_releases_link')}</a>`;
     metaEl.textContent = '';
@@ -51,6 +54,7 @@ const en = STRINGS.en;
       const data = await res.json();
       const downloads = buildDownloads(data);
       if (downloads.length === 0) return renderNone();
+      state = 'ready';
       statusEl.textContent = '';
       btnEl.innerHTML = downloads
         .map((d) => `<a class="btn btn-primary" href="${d.url}">${d.label}</a>`)
@@ -61,10 +65,18 @@ const en = STRINGS.en;
       renderNone();
     }
   }
+
   function paintMeta() {
     const v = metaEl.dataset.version;
     if (v) metaEl.textContent = `${t('download_version')} ${v} · ${t('footer_license')}`;
   }
-  document.addEventListener('langchange', () => { paintMeta(); if (statusEl.textContent) statusEl.textContent = t('download_loading'); });
+
+  function applyLang() {
+    if (state === 'none') { renderNone(); return; }
+    if (state === 'loading') statusEl.textContent = t('download_loading');
+    paintMeta();
+  }
+
+  document.addEventListener('langchange', applyLang);
   load();
 </script>
