@@ -1,0 +1,30 @@
+/* Palette mirrors Galley globals.css. Default = paper (light). */
+:root,
+[data-theme='paper'] {
+  --bg: #faf7f0;
+  --surface: #ffffff;
+  --surface-2: #ede9df;
+  --text: #2a2723;
+  --subtext: #6b6358;
+  --line: #ede9df;
+  --accent: #5e7556;
+  --accent-soft: rgba(94, 117, 86, 0.12);
+  --sage: #5e7556;
+  --ochre: #8e6a2c;
+  --ink: #3b5570;
+  --rust: #8b4a38;
+}
+[data-theme='linen'] {
+  --bg: #222226;
+  --surface: #2a2a2f;
+  --surface-2: #313137;
+  --text: #dcd8cf;
+  --subtext: #8e887d;
+  --line: #313137;
+  --accent: #8fa888;
+  --accent-soft: rgba(143, 168, 136, 0.12);
+  --sage: #8fa888;
+  --ochre: #c9a35a;
+  --ink: #7aa5c9;
+  --rust: #c78866;
+}
