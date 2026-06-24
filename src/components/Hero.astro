@@ -3,29 +3,70 @@ import { STRINGS } from '../lib/i18n';
 const en = STRINGS.en;
 const base = import.meta.env.BASE_URL;
 ---
-<section class="section hero">
-  <div class="wrap inner">
-    <p class="eyebrow">Galley</p>
-    <h1 class="serif title">
-      <span data-i18n="hero_title_a">{en.hero_title_a}</span><br />
-      <em data-i18n="hero_title_b">{en.hero_title_b}</em>
-    </h1>
-    <p class="sub muted" data-i18n="hero_sub">{en.hero_sub}</p>
-    <div class="cta">
-      <a class="btn btn-primary" href="#download" data-i18n="nav_download">{en.nav_download}</a>
-      <a class="btn btn-ghost" href="https://github.com/christiansmmc/galley-app" data-i18n="nav_github">{en.nav_github}</a>
-    </div>
-    <img class="shot heroshot" src={`${base}/01-hero.png`} alt="Galley reviewing a PR" />
+<section class="hero wrap" id="top">
+  <p class="eyebrow" data-i18n="hero_eyebrow">{en.hero_eyebrow}</p>
+  <h1 class="serif title">
+    <span class="line1" data-i18n="hero_title_a">{en.hero_title_a}</span>
+    <span class="line2" data-i18n="hero_title_b">{en.hero_title_b}</span>
+  </h1>
+  <p class="sub" data-i18n="hero_sub">{en.hero_sub}</p>
+  <div class="cta">
+    <a class="btn dl" href="#download" data-i18n="cta_download">{en.cta_download}</a>
   </div>
+  <img
+    class="shot heroshot"
+    src={`${base}/shots/01-hero.png`}
+    alt="Galley reviewing a pull request"
+  />
 </section>
 
 <style>
-  .hero { padding-top: 64px; text-align: center; }
-  .inner { display: flex; flex-direction: column; align-items: center; }
-  .title { font-size: 52px; line-height: 1.08; margin: 16px 0 14px; font-weight: 400; }
-  .title em { color: var(--accent); font-style: italic; }
-  .sub { max-width: 520px; font-size: 18px; }
-  .cta { display: flex; gap: 12px; margin: 26px 0 44px; flex-wrap: wrap; justify-content: center; }
-  .heroshot { max-width: 920px; }
-  @media (max-width: 760px) { .title { font-size: 36px; } .sub { font-size: 16px; } }
+  .hero {
+    padding-top: 64px;
+    text-align: center;
+  }
+  .eyebrow {
+    margin-bottom: 26px;
+  }
+  .title {
+    font-family: 'Spectral', serif;
+    font-weight: 500;
+    font-size: clamp(40px, 6vw, 68px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .line1 {
+    display: block;
+  }
+  .line2 {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--italic);
+  }
+  .sub {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 26px auto 0;
+  }
+  .cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 34px;
+  }
+  .dl {
+    font-size: 15px;
+    font-weight: 500;
+    padding: 13px 26px;
+    border-radius: 9px;
+  }
+  .heroshot {
+    margin-top: 64px;
+    border-radius: 14px;
+  }
 </style>
