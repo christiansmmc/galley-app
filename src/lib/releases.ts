@@ -10,17 +10,18 @@ export interface Release {
   html_url: string;
   assets: ReleaseAsset[];
 }
-
-/**
- * A single, OS-agnostic recommended download. The product is positioned as
- * "runs on any system", so we deliberately do NOT surface per-OS buttons —
- * just the recommended installable asset plus the version tag.
- */
-export interface RecommendedDownload {
+export interface Download {
+  platform: Platform;
+  label: string;
   url: string;
   version: string;
 }
 
+const LABELS: Record<Platform, string> = {
+  rpm: 'Linux · .rpm (Fedora/Nobara)',
+  deb: 'Linux · .deb (Ubuntu/Debian)',
+  windows: 'Windows',
+};
 const ORDER: Platform[] = ['rpm', 'deb', 'windows'];
 
 export function categorizeAsset(name: string): Platform | null {
@@ -32,21 +33,20 @@ export function categorizeAsset(name: string): Platform | null {
 }
 
 /**
- * Pick the single recommended asset for the generic Download CTA. Prefers the
- * installer order in ORDER (rpm → deb → windows); if no recognised installer is
- * present, falls back to the first asset; returns null only when there are no
- * assets at all (caller then links to the releases page).
+ * Build one download button per platform present in the release, labelled with
+ * the available build (Windows / Linux · .rpm / Linux · .deb). First asset of
+ * each platform wins; buttons come back in ORDER.
  */
-export function pickRecommended(release: Release): RecommendedDownload | null {
-  if (release.assets.length === 0) return null;
+export function buildDownloads(release: Release): Download[] {
   const byPlatform = new Map<Platform, ReleaseAsset>();
   for (const asset of release.assets) {
     const p = categorizeAsset(asset.name);
     if (p && !byPlatform.has(p)) byPlatform.set(p, asset);
   }
-  for (const p of ORDER) {
-    const a = byPlatform.get(p);
-    if (a) return { url: a.browser_download_url, version: release.tag_name };
-  }
-  return { url: release.assets[0].browser_download_url, version: release.tag_name };
+  return ORDER.filter((p) => byPlatform.has(p)).map((p) => ({
+    platform: p,
+    label: LABELS[p],
+    url: byPlatform.get(p)!.browser_download_url,
+    version: release.tag_name,
+  }));
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { categorizeAsset, pickRecommended, type Release } from './releases';
+import { categorizeAsset, buildDownloads, type Release } from './releases';
 
 describe('categorizeAsset', () => {
   it('maps extensions to platforms', () => {
@@ -17,7 +17,7 @@ describe('categorizeAsset', () => {
   });
 });
 
-describe('pickRecommended', () => {
+describe('buildDownloads', () => {
   const release: Release = {
     tag_name: 'v0.9.1',
     published_at: '2026-06-01T00:00:00Z',
@@ -30,24 +30,31 @@ describe('pickRecommended', () => {
     ],
   };
 
-  it('prefers the first installer in platform order (rpm)', () => {
-    expect(pickRecommended(release)!.url).toBe('https://x/r.rpm');
+  it('returns one button per platform in ORDER (rpm, deb, windows)', () => {
+    const dl = buildDownloads(release);
+    expect(dl.map((d) => d.platform)).toEqual(['rpm', 'deb', 'windows']);
+    expect(dl[0].url).toBe('https://x/r.rpm');
+    expect(dl[2].label).toBe('Windows');
   });
-  it('falls through the platform order when earlier installers are absent', () => {
-    const winOnly = pickRecommended({ ...release, assets: [release.assets[2]] });
-    expect(winOnly!.url).toBe('https://x/w.exe');
+  it('only includes platforms present in the release', () => {
+    const winOnly = buildDownloads({ ...release, assets: [release.assets[2]] });
+    expect(winOnly).toHaveLength(1);
+    expect(winOnly[0].platform).toBe('windows');
   });
-  it('falls back to the first asset when no installer is recognised', () => {
-    const dl = pickRecommended({
+  it('takes the first asset of each platform', () => {
+    const dl = buildDownloads({
       ...release,
-      assets: [{ name: 'Galley.AppImage', browser_download_url: 'https://x/a.AppImage' }],
+      assets: [
+        { name: 'Galley-1.0-1.x86_64.rpm', browser_download_url: 'https://x/first.rpm' },
+        { name: 'Galley-1.0-2.x86_64.rpm', browser_download_url: 'https://x/second.rpm' },
+      ],
     });
-    expect(dl!.url).toBe('https://x/a.AppImage');
+    expect(dl[0].url).toBe('https://x/first.rpm');
   });
   it('carries the version tag', () => {
-    expect(pickRecommended(release)!.version).toBe('v0.9.1');
+    expect(buildDownloads(release)[0].version).toBe('v0.9.1');
   });
-  it('returns null when there are no assets', () => {
-    expect(pickRecommended({ ...release, assets: [] })).toBeNull();
+  it('returns an empty list when there are no recognised assets', () => {
+    expect(buildDownloads({ ...release, assets: [{ name: 'x.txt', browser_download_url: 'https://x/x' }] })).toEqual([]);
   });
 });

@@ -10,9 +10,7 @@ const en = STRINGS.en;
 
     <div class="actions">
       <div id="dl-status" class="status mono" data-i18n="download_loading">{en.download_loading}</div>
-      <a id="dl-primary" class="btn btn-primary primary" href="#" hidden>
-        <span data-i18n="download_cta">{en.download_cta}</span>
-      </a>
+      <div id="dl-buttons" class="buttons"></div>
       <a id="dl-releases" class="textlink releases" href="#" hidden data-i18n="download_releases_link">
         {en.download_releases_link}
       </a>
@@ -62,13 +60,21 @@ const en = STRINGS.en;
   .status:empty {
     display: none;
   }
-  .primary {
+  .buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .buttons:empty {
+    display: none;
+  }
+  .buttons :global(.dlbtn) {
     font-size: 16px;
     font-weight: 600;
     padding: 16px 34px;
     border-radius: 10px;
   }
-  .primary[hidden],
   .releases[hidden] {
     display: none;
   }
@@ -85,7 +91,7 @@ const en = STRINGS.en;
 </style>
 
 <script>
-  import { pickRecommended } from '../lib/releases';
+  import { buildDownloads } from '../lib/releases';
   import { STRINGS } from '../lib/i18n';
 
   const REPO = 'christiansmmc/galley-app';
@@ -93,7 +99,7 @@ const en = STRINGS.en;
   const RELEASES_URL = `https://github.com/${REPO}/releases`;
 
   const statusEl = document.getElementById('dl-status')!;
-  const primaryEl = document.getElementById('dl-primary') as HTMLAnchorElement;
+  const buttonsEl = document.getElementById('dl-buttons')!;
   const releasesEl = document.getElementById('dl-releases') as HTMLAnchorElement;
   const metaEl = document.getElementById('dl-meta')!;
 
@@ -110,7 +116,7 @@ const en = STRINGS.en;
   function renderNone() {
     state = 'none';
     statusEl.textContent = t('download_none');
-    primaryEl.hidden = true;
+    buttonsEl.innerHTML = '';
     // Fall back to the releases page (allowed: not a repo-source link).
     releasesEl.href = RELEASES_URL;
     releasesEl.hidden = false;
@@ -122,16 +128,21 @@ const en = STRINGS.en;
       const res = await fetch(API, { headers: { Accept: 'application/vnd.github+json' } });
       if (!res.ok) return renderNone();
       const data = await res.json();
-      const rec = pickRecommended(data);
-      if (!rec) return renderNone();
+      const downloads = buildDownloads(data);
+      if (downloads.length === 0) return renderNone();
       state = 'ready';
       statusEl.textContent = '';
-      // Generic, OS-agnostic primary CTA → recommended asset.
-      primaryEl.href = rec.url;
-      primaryEl.hidden = false;
+      // One button per available build (Windows / Linux .rpm / .deb): first is
+      // primary, the rest ghost.
+      buttonsEl.innerHTML = downloads
+        .map((d, i) => {
+          const variant = i === 0 ? 'btn-primary' : 'btn-ghost';
+          return `<a class="btn ${variant} dlbtn" href="${d.url}">${d.label}</a>`;
+        })
+        .join('');
       releasesEl.href = RELEASES_URL;
       releasesEl.hidden = false;
-      metaEl.dataset.version = rec.version;
+      metaEl.dataset.version = data.tag_name;
       paintMeta();
     } catch (e) {
       renderNone();

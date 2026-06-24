@@ -1,10 +1,11 @@
 ---
 import { STRINGS } from '../lib/i18n';
 const en = STRINGS.en;
+const base = import.meta.env.BASE_URL;
 ---
 <nav class="nav wrap">
   <a class="brand" href="#top" aria-label="Galley">
-    <span class="mark"><span class="mark-inner"></span></span>
+    <img class="mark" src={`${base}/favicon.png`} alt="" width="22" height="22" />
     <span class="serif wordmark">Galley</span>
   </a>
   <div class="controls">
@@ -40,18 +41,8 @@ const en = STRINGS.en;
     width: 22px;
     height: 22px;
     border-radius: 5px;
-    background: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.35s ease;
-  }
-  .mark-inner {
-    width: 9px;
-    height: 9px;
-    border-radius: 2px;
-    background: var(--bg);
-    transition: background 0.35s ease;
+    display: block;
+    object-fit: contain;
   }
   .wordmark {
     font-size: 19px;
