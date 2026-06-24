@@ -30,19 +30,18 @@ describe('buildDownloads', () => {
     ],
   };
 
-  it('returns one entry per known platform in fixed order', () => {
+  it('returns one button per platform in ORDER (rpm, deb, windows)', () => {
     const dl = buildDownloads(release);
     expect(dl.map((d) => d.platform)).toEqual(['rpm', 'deb', 'windows']);
     expect(dl[0].url).toBe('https://x/r.rpm');
+    expect(dl[2].label).toBe('Windows');
   });
-  it('drops platforms with no matching asset', () => {
-    const dl = buildDownloads({ ...release, assets: [release.assets[1]] });
-    expect(dl.map((d) => d.platform)).toEqual(['deb']);
+  it('only includes platforms present in the release', () => {
+    const winOnly = buildDownloads({ ...release, assets: [release.assets[2]] });
+    expect(winOnly).toHaveLength(1);
+    expect(winOnly[0].platform).toBe('windows');
   });
-  it('carries the version tag', () => {
-    expect(buildDownloads(release)[0].version).toBe('v0.9.1');
-  });
-  it('takes the first asset when two assets share a platform', () => {
+  it('takes the first asset of each platform', () => {
     const dl = buildDownloads({
       ...release,
       assets: [
@@ -51,5 +50,11 @@ describe('buildDownloads', () => {
       ],
     });
     expect(dl[0].url).toBe('https://x/first.rpm');
+  });
+  it('carries the version tag', () => {
+    expect(buildDownloads(release)[0].version).toBe('v0.9.1');
+  });
+  it('returns an empty list when there are no recognised assets', () => {
+    expect(buildDownloads({ ...release, assets: [{ name: 'x.txt', browser_download_url: 'https://x/x' }] })).toEqual([]);
   });
 });

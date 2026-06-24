@@ -1,6 +1,6 @@
 # galley-app
 
-Presentation site for **Galley** (a Linux desktop GitHub PR reviewer) + public
+Presentation site for **Galley** (a desktop GitHub PR reviewer) + public
 download host. The Galley source code lives in a separate private repo; this
 public repo holds the marketing site (GitHub Pages) and the release binaries
 (GitHub Releases).
@@ -20,9 +20,10 @@ pnpm build    # static output -> dist/
 ## How downloads work
 
 The Download section fetches `releases/latest` from this repo via the public
-GitHub API (client-side) and renders one button per platform asset
-(`.rpm`, `.deb`, `.msi`/`.exe`). If there is no release yet, it links to the
-releases page.
+GitHub API (client-side) and renders a single, OS-agnostic **Download** button
+pointing at the recommended asset (installer order: `.rpm` → `.deb` →
+`.msi`/`.exe`, then the first asset). If there is no release yet, it links to
+the releases page.
 
 ## Publishing a new version
 

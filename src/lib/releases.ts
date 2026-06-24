@@ -32,6 +32,11 @@ export function categorizeAsset(name: string): Platform | null {
   return null;
 }
 
+/**
+ * Build one download button per platform present in the release, labelled with
+ * the available build (Windows / Linux · .rpm / Linux · .deb). First asset of
+ * each platform wins; buttons come back in ORDER.
+ */
 export function buildDownloads(release: Release): Download[] {
   const byPlatform = new Map<Platform, ReleaseAsset>();
   for (const asset of release.assets) {

@@ -3,48 +3,117 @@ import { STRINGS } from '../lib/i18n';
 const en = STRINGS.en;
 const base = import.meta.env.BASE_URL;
 ---
-<header class="topbar">
-  <div class="wrap bar">
-    <a class="brand" href={base}>
-      <img src={`${base}/favicon.png`} width="26" height="26" alt="Galley" />
-      <span class="serif">Galley</span>
-    </a>
-    <nav class="controls">
-      <div class="toggle" id="lang-toggle" role="group" aria-label="Language">
-        <button data-lang="en" class="on">EN</button>
-        <button data-lang="pt">PT</button>
-      </div>
-      <div class="toggle" id="theme-toggle" role="group" aria-label="Theme">
-        <button data-theme-set="paper">Paper</button>
-        <button data-theme-set="linen">Linen</button>
-      </div>
-      <a class="btn btn-primary sm" href="#download" data-i18n="nav_download">{en.nav_download}</a>
-    </nav>
+<nav class="nav wrap">
+  <a class="brand" href="#top" aria-label="Galley">
+    <img class="mark" src={`${base}/favicon.png`} alt="" width="22" height="22" />
+    <span class="serif wordmark">Galley</span>
+  </a>
+  <div class="controls">
+    <div class="seg" id="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="en">EN</button>
+      <button type="button" data-lang="pt">PT</button>
+    </div>
+    <div class="seg" id="theme-toggle" role="group" aria-label="Theme">
+      <button type="button" data-theme-set="paper">Paper</button>
+      <button type="button" data-theme-set="linen">Linen</button>
+    </div>
+    <a class="dl" href="#download" data-i18n="nav_download">{en.nav_download}</a>
   </div>
-</header>
+</nav>
 
 <style>
-  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px);
-    background: color-mix(in srgb, var(--bg) 86%, transparent); border-bottom: 1px solid var(--line); }
-  .bar { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-  .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; font-size: 18px; }
-  .controls { display: flex; align-items: center; gap: 12px; }
-  .toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-  .toggle button { background: var(--surface); color: var(--subtext); border: 0; padding: 6px 12px;
-    font-size: 12px; cursor: pointer; font-family: inherit; }
-  .toggle button.on { background: var(--accent); color: #fff; }
-  .btn.sm { padding: 7px 14px; font-size: 13px; }
-  @media (max-width: 620px) { .brand span { display: none; } .controls { gap: 8px; } }
+  .nav {
+    padding-top: 22px;
+    padding-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    text-decoration: none;
+    color: var(--fg);
+  }
+  .mark {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    display: block;
+    object-fit: contain;
+  }
+  .wordmark {
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .seg {
+    display: flex;
+    align-items: center;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .seg button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    padding: 5px 11px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .seg button.on {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+  .dl {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-fg);
+    background: var(--accent);
+    padding: 8px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-left: 4px;
+    transition: opacity 0.18s ease;
+  }
+  .dl:hover {
+    opacity: 0.9;
+  }
+  @media (max-width: 560px) {
+    .wordmark {
+      display: none;
+    }
+    .controls {
+      gap: 6px;
+    }
+  }
 </style>
 
 <script>
   function syncTheme(t: string) {
-    document.querySelectorAll('#theme-toggle button').forEach((b) =>
-      b.classList.toggle('on', b.getAttribute('data-theme-set') === t));
+    document
+      .querySelectorAll('#theme-toggle button')
+      .forEach((b) => b.classList.toggle('on', b.getAttribute('data-theme-set') === t));
   }
   function syncLang(l: string) {
-    document.querySelectorAll('#lang-toggle button').forEach((b) =>
-      b.classList.toggle('on', b.getAttribute('data-lang') === l));
+    document
+      .querySelectorAll('#lang-toggle button')
+      .forEach((b) => b.classList.toggle('on', b.getAttribute('data-lang') === l));
   }
   document.querySelectorAll('#theme-toggle button').forEach((b) => {
     b.addEventListener('click', () => {
@@ -62,9 +131,10 @@ const base = import.meta.env.BASE_URL;
       syncLang(l);
     });
   });
-  const initTheme = document.documentElement.getAttribute('data-theme') || 'paper';
+  const initTheme = document.documentElement.getAttribute('data-theme') || 'linen';
   const initLang = document.documentElement.getAttribute('lang') || 'en';
   syncTheme(initTheme);
   syncLang(initLang);
-  if (initLang !== 'en') window.__setLang(initLang); // only apply when overriding the English SSR default
+  // Apply copy only when the boot lang overrides the English SSR default.
+  if (initLang !== 'en') window.__setLang(initLang);
 </script>
